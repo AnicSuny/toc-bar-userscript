@@ -96,7 +96,7 @@
       contentSelector: 'article',
       scrollSmoothOffset: -56,
       shouldShow() {
-        return ['/search', '/top/'].every((s) => !location.pathname.startsWith(s));
+        return !['/search', '/top/'].some((s) => location.pathname.startsWith(s));
       },
     },
     'medium.com': { contentSelector: 'article' },
@@ -198,9 +198,6 @@
       siteName = location.hostname;
     } else if (location.hostname.indexOf('readthedocs.io') > -1) {
       siteName = 'readthedocs.io';
-    } else {
-      const match = location.href.match(/([\d\w]+)\.(com|cn|net|org|im|io|cc|site|tv)/i);
-      siteName = match ? match[1] : null;
     }
     if (siteName && SITE_SETTINGS[siteName]) {
       return { siteName, siteSetting: SITE_SETTINGS[siteName] };
@@ -220,9 +217,8 @@
     if (siteSetting.shouldShow && !siteSetting.shouldShow()) return;
 
     if (typeof siteSetting.contentSelector === 'function') {
-      const contentSelector = siteSetting.contentSelector();
-      if (!contentSelector) return;
-      siteSetting = { ...siteSetting, contentSelector };
+      siteSetting.contentSelector = siteSetting.contentSelector();
+      if (!siteSetting.contentSelector) return;
     }
     if (!siteSetting.contentSelector) return;
 
@@ -267,12 +263,12 @@
       }
     },
     get(k) {
-      k = k || location.host;
+      k = k || location.hostname;
       POSITION_STORAGE.checkCache();
       return POSITION_STORAGE.cache[k];
     },
     set(k, position) {
-      k = k || location.host;
+      k = k || location.hostname;
       POSITION_STORAGE.checkCache();
       POSITION_STORAGE.cache[k] = position;
       GM_setValue('tocbar-positions', POSITION_STORAGE.cache);
@@ -774,8 +770,6 @@ a.toc-link { color: currentColor; height: 100%; }
         isDragging: false,
         hasMoved: false,
         anchor: 'right',
-        curTop: 0,
-        curOffset: 0,
       };
 
       const onMouseMove = (e) => {
@@ -795,16 +789,13 @@ a.toc-link { color: currentColor; height: 100%; }
         const maxOffset = Math.max(0, vw - width);
 
         const newTop = Math.max(0, dragState.startTop + deltaY);
-        dragState.curTop = newTop;
         this.element.style.top = `${newTop}px`;
 
         if (dragState.anchor === 'right') {
           const newRight = clamp(dragState.startOffset - deltaX, 0, maxOffset);
-          dragState.curOffset = newRight;
           this.element.style.right = `${newRight}px`;
         } else {
           const newLeft = clamp(dragState.startOffset + deltaX, 0, maxOffset);
-          dragState.curOffset = newLeft;
           this.element.style.left = `${newLeft}px`;
         }
       };
@@ -858,6 +849,7 @@ a.toc-link { color: currentColor; height: 100%; }
       const root = contentRoot || document.body;
       const headingSelector = options.headingSelector || 'h1, h2, h3, h4, h5';
       const headingCount = root.querySelectorAll(headingSelector).length;
+      if (headingCount === 0) return false;
       const dynamicCollapseDepth = headingCount > 80 ? 1 : headingCount > 40 ? 2 : 4;
 
       const tocbotOptions = Object.assign(
@@ -890,7 +882,9 @@ a.toc-link { color: currentColor; height: 100%; }
         if (options.onInit) options.onInit(this);
       } catch (error) {
         console.warn('error in tocbot.init', error);
+        return false;
       }
+      return true;
     },
 
     generateHeaderId(obj) {
@@ -1083,6 +1077,7 @@ a.toc-link { color: currentColor; height: 100%; }
 
     function initSystemListener() {
       if (!window.matchMedia) return;
+      if (mql) return;
       mql = window.matchMedia('(prefers-color-scheme: dark)');
       const handler = () => {
         if (mode === 'auto-system') applyTheme();
@@ -1211,7 +1206,6 @@ a.toc-link { color: currentColor; height: 100%; }
   let TOC_APP_INSTANCE = null;
 
   function destroyTocApp() {
-    console.log('[tocbar] mount/destroy', location.href, performance.now());
     try { tocbot.destroy(); } catch (e) {}
     if (TOC_APP_INSTANCE && TOC_APP_INSTANCE.element && TOC_APP_INSTANCE.element.parentNode) {
       ThemeController.detach(TOC_APP_INSTANCE);
@@ -1221,7 +1215,6 @@ a.toc-link { color: currentColor; height: 100%; }
   }
 
   function mountTocApp() {
-    console.log('[tocbar] mount/destroy', location.href, performance.now());
     const options = getPageTocOptions();
     if (!options) {
       destroyTocApp();
@@ -1232,7 +1225,11 @@ a.toc-link { color: currentColor; height: 100%; }
 
     const tocBar = new TocBar(options);
     TOC_APP_INSTANCE = tocBar;
-    tocBar.initTocbot(options);
+    const hasHeadings = tocBar.initTocbot(options);
+    if (!hasHeadings) {
+      destroyTocApp();
+      return;
+    }
     tocBar.refreshStyle();
     ThemeController.attach(tocBar);
   }
