@@ -2,6 +2,8 @@
 
 一个油猴脚本，在页面中插入一个显示当前内容大纲的浮动组件，修改自 [toc-bar-userscript](https://greasyfork.org/zh-CN/scripts/406337-toc-bar-auto-generating-table-of-content)
 
+[![Install](https://img.shields.io/badge/Install-v1.9.11-blue)](https://raw.githubusercontent.com/AnicSuny/toc-bar-userscript/main/toc-bar.user.js)
+
 ## ✨Features
 
 - 使用 [tocbot](https://tscanlin.github.io/tocbot) 生成 Table of Content
