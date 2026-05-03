@@ -6,7 +6,7 @@
 // @license           MIT
 // @description       A floating table of content widget
 // @description:zh-CN 自动生成文章大纲目录，在页面右侧展示一个浮动组件。覆盖常用在线阅读资讯站（技术向）。github/medium/MDN/掘金/简书等
-// @version           1.9.9
+// @version           1.9.10
 // @match             *://www.jianshu.com/p/*
 // @match             *://cdn2.jianshu.io/p/*
 // @match             *://zhuanlan.zhihu.com/p/*
@@ -58,8 +58,8 @@
 // @grant             GM_unregisterMenuCommand
 // @require           https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.18.2/tocbot.min.js
 // @icon              https://raw.githubusercontent.com/AnicSuny/toc-bar-userscript/master/toc-logo.svg
-// @downloadURL       https://update.greasyfork.org/scripts/567142/Toc%20Bar%2C%20auto-generating%20table%20of%20content.user.js
-// @updateURL         https://update.greasyfork.org/scripts/567142/Toc%20Bar%2C%20auto-generating%20table%20of%20content.meta.js
+// @downloadURL       https://raw.githubusercontent.com/AnicSuny/toc-bar-userscript/main/toc-bar.user.js
+// @updateURL         https://raw.githubusercontent.com/AnicSuny/toc-bar-userscript/main/toc-bar.user.js
 // ==/UserScript==
 
 /*
