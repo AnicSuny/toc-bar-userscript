@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name              Toc Bar, auto-generating table of content
 // @name:zh-CN        Toc Bar, 自动生成文章大纲。知乎、微信公众号等阅读好伴侣
-// @author            Kong-void
-// @namespace         https://github.com/Kong-void
+// @author            AnicSuny
+// @namespace         https://github.com/AnicSuny
 // @license           MIT
 // @description       A floating table of content widget
 // @description:zh-CN 自动生成文章大纲目录，在页面右侧展示一个浮动组件。覆盖常用在线阅读资讯站（技术向）。github/medium/MDN/掘金/简书等
-// @version           1.0
+// @version           1.9.7
 // @match             *://www.jianshu.com/p/*
 // @match             *://cdn2.jianshu.io/p/*
 // @match             *://zhuanlan.zhihu.com/p/*
@@ -57,11 +57,13 @@
 // @grant             GM_registerMenuCommand
 // @grant             GM_unregisterMenuCommand
 // @require           https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.18.2/tocbot.min.js
-// @icon              https://raw.githubusercontent.com/Kong-void/toc-bar-userscript/master/toc-logo.svg
+// @icon              https://raw.githubusercontent.com/AnicSuny/toc-bar-userscript/master/toc-logo.svg
+// @downloadURL       https://update.greasyfork.org/scripts/567142/Toc%20Bar%2C%20auto-generating%20table%20of%20content.user.js
+// @updateURL         https://update.greasyfork.org/scripts/567142/Toc%20Bar%2C%20auto-generating%20table%20of%20content.meta.js
 // ==/UserScript==
 
 /*
-  Derived from an MIT-licensed project (https://github.com/hikerpigtoc-bar-userscript).
+  Derived from an MIT-licensed project (https://github.com/hikerpig/toc-bar-userscript).
   If you redistribute this script, keep the original MIT license notice.
 */
 
@@ -1209,6 +1211,7 @@ a.toc-link { color: currentColor; height: 100%; }
   let TOC_APP_INSTANCE = null;
 
   function destroyTocApp() {
+    console.log('[tocbar] mount/destroy', location.href, performance.now());
     try { tocbot.destroy(); } catch (e) {}
     if (TOC_APP_INSTANCE && TOC_APP_INSTANCE.element && TOC_APP_INSTANCE.element.parentNode) {
       ThemeController.detach(TOC_APP_INSTANCE);
@@ -1218,6 +1221,7 @@ a.toc-link { color: currentColor; height: 100%; }
   }
 
   function mountTocApp() {
+    console.log('[tocbar] mount/destroy', location.href, performance.now());
     const options = getPageTocOptions();
     if (!options) {
       destroyTocApp();
