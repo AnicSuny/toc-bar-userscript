@@ -902,11 +902,11 @@ a.toc-link { color: currentColor; height: 100%; }
     },
 
     // ✅ 关键改动：展开/收起都会先 chooseAnchorForToggle
-    toggle(shouldShow = !this.visible, opts = {}) {
+    toggle(visible = !this.visible, opts = {}) {
       const options = Object.assign({ persist: true, autoAnchor: true }, opts);
       const HIDDEN_CLASS = 'toc-bar--collapsed';
 
-      const targetWidth = shouldShow ? TOC_BAR_WIDTH : TOC_BAR_COLLAPSED_WIDTH;
+      const targetWidth = visible ? TOC_BAR_WIDTH : TOC_BAR_COLLAPSED_WIDTH;
 
       if (options.autoAnchor) {
         // 展开时：用折叠态当前位置选锚点
@@ -914,7 +914,7 @@ a.toc-link { color: currentColor; height: 100%; }
         this.chooseAnchorForToggle(targetWidth);
       }
 
-      if (shouldShow) {
+      if (visible) {
         this.element.classList.remove(HIDDEN_CLASS);
         this.visible = true;
       } else {
@@ -1263,8 +1263,11 @@ a.toc-link { color: currentColor; height: 100%; }
       const raw = history[key];
       if (typeof raw !== 'function') return;
       history[key] = function (...args) {
+        const oldUrl = location.href;
         const ret = raw.apply(this, args);
-        window.dispatchEvent(new Event('tocbar:urlchange'));
+        if (location.href !== oldUrl) {
+          window.dispatchEvent(new Event('tocbar:urlchange'));
+        }
         return ret;
       };
     });
