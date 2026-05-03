@@ -2,7 +2,7 @@
 
 一个油猴脚本，在页面中插入一个显示当前内容大纲的浮动组件，修改自 [toc-bar-userscript](https://greasyfork.org/zh-CN/scripts/406337-toc-bar-auto-generating-table-of-content)
 
-[![Install](https://img.shields.io/badge/Install-v1.9.11-blue)](https://raw.githubusercontent.com/AnicSuny/toc-bar-userscript/main/toc-bar.user.js)
+[![Install](https://img.shields.io/badge/Install-v1.9.12-blue)](https://raw.githubusercontent.com/AnicSuny/toc-bar-userscript/main/toc-bar.user.js)
 
 ## ✨Features
 
@@ -20,7 +20,7 @@
 
 ## Changelog
 
-### v1.9.10
+### v1.9.12
 
 | 问题 | 说明 |
 |------|------|
@@ -28,7 +28,7 @@
 | getSiteInfo() 无效正则回退 | 移除永远匹配不到 SITE_SETTINGS 的死代码分支 |
 | dragState 死代码 | 移除只写不读的 `curTop` / `curOffset` |
 | getPageTocOptions 冗余展开 | 简化不必要的 `{...spread}` 对象拷贝 |
-| dev.to shouldShow 可读性 | `.every(!x)` → `!.some(x)` |
+| dev1.9.12to shouldShow 可读性 | `.every(!x)` → `!.some(x)` |
 | console.log 残留 | 删除两处 debug 日志 |
 | 空 TOC 面板 | 页面无标题时不再显示空白浮动组件 |
 | ThemeController 重复监听 | `initSystemListener` 加重复调用守卫 |
