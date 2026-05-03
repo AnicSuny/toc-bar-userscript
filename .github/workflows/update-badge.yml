@@ -25,7 +25,7 @@ jobs:
 
       - name: Update README badge
         run: |
-          sed -i "s/v[0-9.]\+/v${{ steps.version.outputs.version }}/" README.md
+          sed -i "/shields\.io.*Install-/s/v[0-9.]\+/v${{ steps.version.outputs.version }}/" README.md
 
       - name: Commit and push
         run: |
